@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Musical</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; color:white; text-align:center; padding:20px; }
+    #app { max-width:600px; margin:auto; }
+    button { padding:10px 20px; margin:10px; border:none; border-radius:8px; font-size:18px; cursor:pointer; }
+    .btn { background:#333; color:white; }
+    .btn:hover { background:#555; }
+    audio { margin-top:20px; }
+    .question { margin-top:30px; font-size:22px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>?? Quiz Musical</h1>
+    <h3>Pr&ecirc;ts pour une vaute ? <br /><img src="icon-192.png" width="102" height="119" /><img src="Vaute_01.png" width="102" height="119" /></h3>
+    <p id="score"></p>
+    <audio id="player" controls></audio>
+
+    <div id="questionZone"></div>
+  </div>
+
+  <script>
+    const questions = [
+      
+
+{ extrait: "Music_01_Lorie.mp3", options: ["Laam", "Petula Clark", "Natacha St-Pierre", "Lorie"], correct: 3 },
+{ extrait: "Music_02_Laurent Voulzy.mp3", options: ["David Hallyday", "Eric Charden", "Laurent Voulzy", "C. Jerôme"], correct: 2 },
+{ extrait: "Music_03_Serge Lama.mp3", options: ["Yannick Noah", "Nicolas Peyrac", "Serge Lama", "Christophe"], correct: 2 },
+{ extrait: "Music_04_Liane Foly.mp3", options: ["Liane Foly", "Véronique Sanson", "Petula Clark", "Céline Dion"], correct: 0 },
+{ extrait: "Music_05_Lara Fabian.mp3", options: ["Natacha St-Pierre", "Lara Fabian", "Patricia Kaas", "Julie Pietri"], correct: 1 },
+{ extrait: "Music_06_David Charvet.mp3", options: ["David Hallyday", "Eric Charden", "Claude Barzotti", "David Charvet"], correct: 3 },
+{ extrait: "Music_07_Laam.mp3", options: ["Nana Mouskouri", "Laam", "Patricia Kaas", "Catherine Lara"], correct: 1 },
+{ extrait: "Music_08_Florent Pagny.mp3", options: ["Danyel Gérard", "Yves Simon", "Florent Pagny", "D. Barbelivien"], correct: 2 },
+{ extrait: "Music_09_Visage.mp3", options: ["Visage", "Petula Clark", "Era", "Axel Bauer"], correct: 0 },
+{ extrait: "Music_10_Era.mp3", options: ["Visage", "Petula Clark", "Era", "Dalida"], correct: 2 },
+{ extrait: "Music_11_MC Solar.mp3", options: ["Patrick Fiori", "MC Solar", "François Valery", "Yannick Noah"], correct: 1 },
+{ extrait: "Music_12_Danyel Gérard.mp3", options: ["Daniel Balavoine", "Léo Ferré", "Pascal Obispo", "Danyel Gérard"], correct: 3 },
+{ extrait: "Music_13_Mike Brant.mp3", options: ["Pierre Vassiliu", "Mike Brant", "F. Feldman", "Max. Leforestier"], correct: 1 },
+{ extrait: "Music_14_C. Jerôme.mp3", options: ["Daniel Guichard", "Dave", "C. Jerôme", "Michel Sardou"], correct: 2 },
+{ extrait: "Music_15_Jean-Luc Lahaye.mp3", options: ["Yves Duteil", "Daniel Guichard", "Jean-Luc Lahaye", "Nino Ferrer"], correct: 2 },
+{ extrait: "Music_16_Fréderic François.mp3", options: ["Fréderic François", "J.L. Aubert", "Yves Simon", "Charles Trenet"], correct: 0 },
+{ extrait: "Music_17_Gilbert Bécaud.mp3", options: ["Era", "Richard Anthony", "Sacha Distel", "Gilbert Bécaud"], correct: 3 },
+{ extrait: "Music_18_Bernard Lavilliers.mp3", options: ["Nino Ferrer", "Max. Leforestier", "Bernard Lavilliers", "Yves Simon"], correct: 2 },
+{ extrait: "Music_19_François Valery.mp3", options: ["Eric Charden", "François Valery", "Pascal Obispo", "Yannick Noah"], correct: 0 },
+{ extrait: "Music_20_Daniel Guichard.mp3", options: ["Léo Ferré", "Pierre Vassiliu", "Daniel Guichard", "Jean Ferrat"], correct: 2 },
+{ extrait: "Music_21_Nicolas Peyrac.mp3", options: ["Nicolas Peyrac", "Pierre Perret", "Michel Sardou", "Yves Duteil"], correct: 0 },
+{ extrait: "Music_22_David Hallyday.mp3", options: ["Florent Pagny", "David Hallyday", "Claude Barzotti", "Roch Voisine"], correct: 0 },
+{ extrait: "Music_23_Dave.mp3", options: ["Axel Bauer", "J.L. Aubert", "Thierry Pastor", "Dave"], correct: 3 },
+{ extrait: "Music_24_Nino Ferrer.mp3", options: ["Thierry Pastor", "Nino Ferrer", "Gérard Blanc", "C. Jerôme"], correct: 1 },
+{ extrait: "Music_25_Léo Ferré.mp3", options: ["Michel Sardou", "Jean Ferrat", "Nino Ferrer", "Léo Ferré"], correct: 3 },
+{ extrait: "Music_26_Max. Leforestier.mp3", options: ["Michel Sardou", "Max. Leforestier", "Jean Ferrat", "Nino Ferrer"], correct: 1 },
+{ extrait: "Music_27_Yves Duteil.mp3", options: ["J.L. Aubert", "F. Feldman", "Daniel Balavoine", "Yves Duteil"], correct: 3 },
+{ extrait: "Music_28_G. Moustaki.mp3", options: ["Daniel Balavoine", "G. Moustaki", "Jean Ferrat", "Phil Barney"], correct: 1 },
+{ extrait: "Music_29_Nana Mouskouri.mp3", options: ["Nana Mouskouri", "Brigitte Bardot", "Jenifer", "Jeanne Mas"], correct: 0 },
+{ extrait: "Music_30_Yves Simon.mp3", options: ["Yves Simon", "Claude Barzotti", "Richard Anthony", "Christophe"], correct: 0 },
+{ extrait: "Music_31_Véronique Sanson.mp3", options: ["Véronique Sanson", "Hélène Ségara", "Mireille Mathieu", "Catherine Lara"], correct: 0 },
+{ extrait: "Music_32_Richard Anthony.mp3", options: ["D. Barbelivien", "Claude Nougaro", "Richard Anthony", "Yves Simon"], correct: 2 },
+{ extrait: "Music_33_Petula Clark.mp3", options: ["Céline Dion", "Hélène Ségara", "Petula Clark", "Patricia Kaas"], correct: 2 },
+{ extrait: "Music_34_Eric Charden.mp3", options: ["Pierre Perret", "François Valery", "Patrick Fiori", "Eric Charden"], correct: 3 },
+{ extrait: "Music_35_Brigitte Bardot.mp3", options: ["Jenifer", "Sheila", "Desireles", "Brigitte Bardot"], correct: 3 },
+{ extrait: "Music_36_Jean Ferrat.mp3", options: ["J.J. Goldman", "Jean Ferrat", "Gérard Blanc", "Michel Jonasz"], correct: 1 },
+{ extrait: "Music_37_Jenifer.mp3", options: ["Jenifer", "Céline Dion", "Corynne Charby", "Caroline Loeb"], correct: 0 },
+{ extrait: "Music_38_Yannick Noah.mp3", options: ["Michel Jonasz", "_D. Barbelivien", "F. Feldman", "Yannick Noah"], correct: 3 },
+{ extrait: "Music_39_Hélène Ségara.mp3", options: ["Jeanne Mas", "Hélène Ségara", "Véronique Sanson", "Elsa"], correct: 1 },
+{ extrait: "Music_40_Roch Voisine.mp3", options: ["D. Barbelivien", "Roch Voisine", "Gérard Blanc", "Axel Bauer"], correct: 1 },
+{ extrait: "Music_41_Natacha St-Pierre.mp3", options: ["Lio", "Isabelle Boulay", "Bibie", "Natacha St-Pierre"], correct: 3 },
+{ extrait: "Music_42_Daniel Balavoine.mp3", options: ["Pierre Vassiliu", "Sacha Distel", "Daniel Balavoine", "Garou"], correct: 2 },
+{ extrait: "Music_43_Michel Sardou.mp3", options: ["Garou", "Phil Barney", "J.J. Goldman", "Michel Sardou"], correct: 3 },
+{ extrait: "Music_44_Christophe.mp3", options: ["Christophe", "Axel Bauer", "Eric Charden", "Patrick Coutin"], correct: 0 },
+{ extrait: "Music_45_J.L. Aubert.mp3", options: ["Eric Charden", "J.L. Aubert", "Michel Jonasz", "Eddy Mitchell"], correct: 1 },
+{ extrait: "Music_46_Dalida.mp3", options: ["Michèle Torr", "Dalida", "Natacha St-Pierre", "Elsa"], correct: 1 },
+{ extrait: "Music_47_J.J. Goldman.mp3", options: ["Claude Barzotti", "Claude Nougaro", "J.J. Goldman", "R. Gotainer"], correct: 2 },
+{ extrait: "Music_48_D. Barbelivien.mp3", options: ["Salvatore Adamo", "D. Barbelivien", "Johnny Hallyday", "Patrick Coutin"], correct: 1 },
+{ extrait: "Music_49_Céline Dion.mp3", options: ["Céline Dion", "France Gall", "Lio", "Elsa"], correct: 0 },
+{ extrait: "Music_50_Charles Trenet.mp3", options: ["Julien Clerc", "Pierre Perret", "Charles Trenet", "Michel Jonasz"], correct: 2 },
+{ extrait: "Music_51_F. Feldman.mp3", options: ["Patrick Fiori", "Julien Clerc", "Gérard Lenorman", "F. Feldman"], correct: 3 },
+{ extrait: "Music_52_Axel Bauer.mp3", options: ["Florent Pagny", "Axel Bauer", "Yannick Noah", "Michel Berger"], correct: 1 },
+{ extrait: "Music_53_Claude Barzotti.mp3", options: ["Jacques Dutronc", "Gérard Blanc", "Claude Barzotti", "Michel Berger"], correct: 2 },
+{ extrait: "Music_54_Patricia Kaas.mp3", options: ["Patricia Kaas", "Hélène Ségara", "Sylvie Vartan", "Natacha St-Pierre"], correct: 0 },
+{ extrait: "Music_55_Gérard Blanc.mp3", options: ["Thierry Pastor", "Jacques Dutronc", "Gérard Blanc", "Nicolas Peyrac"], correct: 2 },
+{ extrait: "Music_56_Thierry Pastor.mp3", options: ["Marc Lavoine", "Michel Berger", "Christophe", "Thierry Pastor"], correct: 3 },
+{ extrait: "Music_57_Patrick Coutin.mp3", options: ["Dick Rivers", "Patrick  Coutin", "Marc Lavoine", "Eric Charden"], correct: 1 },
+{ extrait: "Music_58_Phil Barney.mp3", options: ["Charles Anavour", "Phil Barney", "Enrico Macias", "Yves Montant"], correct: 1 },
+{ extrait: "Music_59_Serge Gainsbourg.mp3", options: ["R. Gotainer", "Herbert Leonard", "Serge Gainsbourg", "Johnny Hallyday"], correct: 2 },
+{ extrait: "Music_60_Michel Jonasz.mp3", options: ["Michel Jonasz", "Yves Montant", "Alain Barrière", "Alain Souchon"], correct: 0 },
+{ extrait: "Music_61_Sheila.mp3", options: ["Lio", "Jeanne Mas", "Sheila", "Véronique Sanson"], correct: 2 },
+{ extrait: "Music_62_R. Gotainer.mp3", options: ["R. Gotainer", "Patrick Juvet", "Bernard Lavilliers", "Eddy Mitchell"], correct: 0 },
+{ extrait: "Music_63_Catherine Lara.mp3", options: ["France Gall", "Elsa", "Brigitte Bardot", "Catherine Lara"], correct: 3 },
+{ extrait: "Music_64_Bibie.mp3", options: ["Sheila", "Bibie", "Régine", "Nana Mouskouri"], correct: 1 },
+{ extrait: "Music_65_Salvatore Adamo.mp3", options: ["Julien Clerc", "Sacha Distel", "Huges Auffray", "Salvatore Adamo"], correct: 3 },
+{ extrait: "Music_66_Corynne Charby.mp3", options: ["Michèle Torr", "Corynne Charby", "Sylvie Vartan", "Jeanne Mas"], correct: 1 },
+{ extrait: "Music_67_Julie Pietri.mp3", options: ["Julie Pietri", "Mireille Mathieu", "Véronique Sanson", "Lara Fabian"], correct: 0 },
+{ extrait: "Music_68_Lio.mp3", options: ["Michèle Torr", "Liane Foly", "Lio", "Régine"], correct: 2 },
+{ extrait: "Music_69_Jeanne Mas.mp3", options: ["France Gall", "Lara Fabian", "Julie Pietri", "Jeanne Mas"], correct: 3 },
+{ extrait: "Music_70_Elsa.mp3", options: ["Elsa", "Michèle Torr", "Françoise Hardy", "Lara Fabian"], correct: 0 },
+{ extrait: "Music_71_Desireless.mp3", options: ["Patricia Kaas", "Lorie", "Desireless", "France Gall"], correct: 2 },
+{ extrait: "Music_72_Caroline Loeb.mp3", options: ["Brigitte Bardot", "Véronique Sanson", "Caroline Loeb", "Corynne Charby"], correct: 2 },
+{ extrait: "Music_73_Johnny Hallyday.mp3", options: ["Enrico Macias", "Johnny Hallyday", "Sacha Distel", "Julien Clerc"], correct: 1 },
+{ extrait: "Music_74_Ophélie Winter.mp3", options: ["Sylvie Vartan", "Ophélie Winter", "Liane Foly", "Patricia Kaas"], correct: 1 },
+{ extrait: "Music_75_Isabelle Boulay.mp3", options: ["Régine", "Françoise Hardy", "Isabelle Boulay", "Michèle Torr"], correct: 2 },
+{ extrait: "Music_76_Michèle Torr.mp3", options: ["Michèle Torr", "France Gall", "Ophélie Winter", "Julie Pietri"], correct: 0 },
+{ extrait: "Music_77_Patrick Fiori.mp3", options: ["Patrick Fiori", "Thierry Pastor", "Yves Montant", "Eddy Mitchell"], correct: 0 },
+{ extrait: "Music_78_Marc Lavoine.mp3", options: ["Gérard Lenorman", "Joe Dassin", "Marc Lavoine", "Patrick Juvet"], correct: 2 },
+{ extrait: "Music_79_Patrick Bruel.mp3", options: ["Jacques Brel", "Patrick Bruel", "Alain Barrière", "Huges Auffray"], correct: 1 },
+{ extrait: "Music_80_Pascal Obispo.mp3", options: ["Patrick Juvet", "Jacques Brel", "Pascal Obispo", "Herbert Leonard"], correct: 2 },
+{ extrait: "Music_81_Charles Anavour.mp3", options: ["Charles Anavour", "Eddy Mitchell", "Yves Montant", "Claude François"], correct: 0 },
+{ extrait: "Music_82_Pierre Perret.mp3", options: ["Claude François", "Marcel Zanini", "Pierre Perret", "Jacques Brel"], correct: 2 },
+{ extrait: "Music_83_Régine.mp3", options: ["Isabelle Boulay", "Lara Fabian", "Corynne Charby", "Régine"], correct: 3 },
+{ extrait: "Music_84_Jacques Dutronc.mp3", options: ["Sacha Distel", "Jacques Dutronc", "Charles Anavour", "Francis Cabrel"], correct: 1 },
+{ extrait: "Music_85_Julien Clerc.mp3", options: ["Gérard Lenorman", "Huges Auffray", "Julien Clerc", "Alain Barrière"], correct: 2 },
+{ extrait: "Music_86_Joe Dassin.mp3", options: ["Joe Dassin", "Claude François", "Antoine", "Georges Brassens"], correct: 0 },
+{ extrait: "Music_87_Yves Montant.mp3", options: ["Nino Ferrer", "Georges Brassens", "Yves Montant", "Huges Auffray"], correct: 2 },
+{ extrait: "Music_88_Eddy Mitchell.mp3", options: ["Claude Nougaro", "Michel Delpech", "Alain Souchon", "Eddy Mitchell"], correct: 3 },
+{ extrait: "Music_89_Gérard Lenorman.mp3", options: ["Patrick Juvet", "Gérard Lenorman", "Jean Ferrat", "Michel Polnareff"], correct: 1 },
+{ extrait: "Music_90_Enrico Macias.mp3", options: ["Marcel Zanini", "Enrico Macias", "Alain Barrière", "Claude François"], correct: 1 },
+{ extrait: "Music_91_Herbert Leonard.mp3", options: ["Gérard Lenorman", "Yves Montant", "Herbert Leonard", "Eddy Mitchell"], correct: 2 },
+{ extrait: "Music_92_Jacques Brel.mp3", options: ["Alain Barrière", "Jacques Brel", "Michel Delpech", "Joe Dassin"], correct: 1 },
+{ extrait: "Music_93_Dick Rivers.mp3", options: ["Jacques Dutronc", "Sacha Distel", "Dick Rivers", "Huges Auffray"], correct: 2 },
+{ extrait: "Music_94_Georges Brassens.mp3", options: ["Claude François", "Charles Anavour", "Sacha Distel", "Georges Brassens"], correct: 3 },
+{ extrait: "Music_95_Sylvie Vartan.mp3", options: ["Corynne Charby", "Sylvie Vartan", "Julie Pietri", "Elsa"], correct: 1 },
+{ extrait: "Music_96_France Gall.mp3", options: ["France Gall", "Sylvie Vartan", "Patrick Bruel", "Charles Anavour"], correct: 0 },
+{ extrait: "Music_97_Antoine.mp3", options: ["Marcel Zanini", "Thierry Pastor", "Antoine", "Pierre Vassiliu"], correct: 2 },
+{ extrait: "Music_98_Françoise Hardy.mp3", options: ["Corynne Charby", "Mireille Mathieu", "Françoise Hardy", "Bibie"], correct: 2 },
+{ extrait: "Music_99_Claude François.mp3", options: ["Garou", "Alain Souchon", "Claude François", "Michel Delpech"], correct: 2 },
+{ extrait: "Music_100_Michel Berger.mp3", options: ["Michel Polnareff", "Michel Berger", "Michel Delpech", "Michel Jonasz"], correct: 1 },
+{ extrait: "Music_101_Michel Polnareff.mp3", options: ["Michel Polnareff", "Marc Lavoine", "Charles Anavour", "Jean Ferrat"], correct: 0 },
+{ extrait: "Music_102_Alain Souchon.mp3", options: ["Serge Lama", "Florent Pagny", "Alain Souchon", "Danyel Gérard"], correct: 2 },
+{ extrait: "Music_103_Patrick Juvet.mp3", options: ["Claude François", "Jacques Dutronc", "Enrico Macias", "Patrick Juvet"], correct: 3 },
+{ extrait: "Music_104_Francis Cabrel.mp3", options: ["F. Feldman", "Francis Cabrel", "Léo Ferré", "Laurent Voulzy"], correct: 1 },
+{ extrait: "Music_105_Michel Delpech.mp3", options: ["Michel Delpech", "Marc Lavoine", "Michel Berger", "Pierre Perret"], correct: 0 },
+{ extrait: "Music_106_Sacha Distel.mp3", options: ["Sacha Distel", "Danyel Gérard", "Roch Voisine", "Thierry Pastor"], correct: 0 },
+{ extrait: "Music_107_Mireille Mathieu.mp3", options: ["Lara Fabian", "Michèle Torr", "Mireille Mathieu", "Françoise Hardy"], correct: 2 },
+{ extrait: "Music_108_Alain Barrière.mp3", options: ["Serge Lama", "Alain Barrière", "Florent Pagny", "Enrico Macias"], correct: 1 },
+{ extrait: "Music_109_Huges Auffray.mp3", options: ["Pierre Perret", "David Hallyday", "Huges Auffray", "Léo Ferré"], correct: 2 },
+{ extrait: "Music_110_Claude Nougaro.mp3", options: ["Johnny Hallyday", "Claude Nougaro", "Jacques Dutronc", "Yves Montant"], correct: 1 },
+{ extrait: "Music_111_Pierre Vassiliu.mp3", options: ["Laurent Voulzy", "Danyel Gérard", "Marc Lavoine", "Pierre Vassiliu"], correct: 3 },
+{ extrait: "Music_112_Marcel Zanini.mp3", options: ["Florent Pagny", "F. Feldman", "Michel Berger", "Jacques Brel"], correct: 0 },
+{ extrait: "Music_113_Garou.mp3", options: ["Serge Lama", "Roch Voisine", "Garou", "Pierre Perret"], correct: 2 }
+
+      
+    ];
+
+    let index = 0;
+    let score = 0;
+
+    function afficherQuestion() {
+      if (index >= questions.length) return afficherResultat();
+      const q = questions[index];
+      document.getElementById("player").src = q.extrait;
+      let html = `<p class='question'>Question ${index+1} / ${questions.length}</p>`;
+      q.options.forEach((opt, i) => { html += `<button class='btn' onclick='choisir(${i})'>${opt}</button><br>`; });
+      document.getElementById("questionZone").innerHTML = html;
+      document.getElementById("score").innerText = `Score : ${score}`;
+    }
+
+    function choisir(i) { if (i === questions[index].correct) score++; index++; afficherQuestion(); }
+
+    function afficherResultat() { document.getElementById("questionZone").innerHTML = `<h2> Quiz termin&eacute; !</h2><p>Ton score : ${score} / ${questions.length}</p>`; }
+
+    afficherQuestion();
+
+    // PWA service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(() => console.log('Service Worker enregistré'));
+      });
+    }
+  </script>
+</body>
+
+</html>
+
+
